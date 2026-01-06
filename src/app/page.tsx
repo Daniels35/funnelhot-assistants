@@ -1,44 +1,28 @@
-import { ThemeToggle } from "@/components/ui/theme-toggle";
-
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-background transition-colors">
-      <div className="absolute top-5 right-5">
-        <ThemeToggle />
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex flex-col gap-2 mb-8">
+        <h1 className="text-3xl font-bold tracking-tight">Mis Asistentes</h1>
+        <p className="text-muted-foreground text-gray-500">
+          Gestiona y entrena tus agentes de IA para WhatsApp.
+        </p>
       </div>
 
-      <div className="text-center space-y-6">
-        <h1 className="text-5xl font-bold text-hot tracking-tighter">
-          FunnelHot <span className="text-foreground">Assistants</span>
-        </h1>
-        
-        <p className="text-xl text-foreground/60 max-w-lg mx-auto">
-          Sistema de diseño híbrido (Dark/Light) configurado. 
-          La identidad de fuego persiste en ambos mundos. 🔥
-        </p>
-        
-        <div className="flex gap-4 justify-center">
-          <button className="px-8 py-3 rounded-lg bg-gradient-fire text-white font-bold hover:shadow-glow-orange transition-all transform hover:scale-105">
-            Crear Asistente
-          </button>
-          <button className="px-8 py-3 rounded-lg bg-card border border-border text-foreground font-medium hover:border-hot transition-all">
-            Ver Documentación
-          </button>
+      {/* Aquí irá el Grid de Tarjetas en el siguiente paso */}
+      <div className="p-12 border border-dashed border-border rounded-lg flex flex-col items-center justify-center text-center space-y-4">
+        <div className="p-4 rounded-full bg-card">
+          <span className="text-4xl">🤖</span>
         </div>
-
-        {/* Tarjeta de prueba para ver el cambio de fondo */}
-        <div className="mt-12 p-6 rounded-xl bg-card border border-border max-w-sm mx-auto shadow-lg">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-          </div>
-          <p className="text-sm text-foreground/80 font-mono">
-            Status: System Operational<br/>
-            Theme: Adaptive
+        <div>
+          <h3 className="text-lg font-semibold">No tienes asistentes creados</h3>
+          <p className="text-sm text-gray-500 max-w-sm mx-auto mt-2">
+            Comienza creando tu primer asistente de IA para automatizar tus ventas.
           </p>
         </div>
+        <button className="mt-4 px-6 py-2 rounded-md bg-gradient-fire text-white font-medium hover:shadow-glow-orange transition-all">
+          Crear Nuevo Asistente
+        </button>
       </div>
-    </main>
+    </div>
   );
 }

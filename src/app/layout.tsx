@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ThemeProvider } from "@/components/ui/theme-provider"; // Importamos
+import { ThemeProvider } from "@/components/ui/theme-provider";
 import "./globals.css";
+import { Header } from "@/components/layout/Header";
 
 const geistSans = Geist({
   variable: "--font-sans",
@@ -27,6 +28,7 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning> 
       {/* suppressHydrationWarning es necesario para next-themes */}
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
+        <Header />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark" // Por defecto oscuro (Marca FunnelHot)
