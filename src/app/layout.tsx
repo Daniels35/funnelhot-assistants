@@ -28,13 +28,13 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning> 
       {/* suppressHydrationWarning es necesario para next-themes */}
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
-        <Header />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark" // Por defecto oscuro (Marca FunnelHot)
           enableSystem
           disableTransitionOnChange
         >
+        <Header />
           {children}
         </ThemeProvider>
       </body>
