@@ -1,26 +1,45 @@
 @import "tailwindcss";
 
+/* @plugin "tailwindcss-animate"; */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  /* Paleta "Fuego" FunnelHot */
+  /* Paleta de Marca (Funciona en ambos modos) */
   --color-hot: #FF6B00;       /* Naranja Principal */
   --color-hot-hover: #E65100; /* Naranja Oscuro */
   --color-fire: #DC2626;      /* Rojo Intenso */
   --color-spark: #FACC15;     /* Amarillo */
   --color-whatsapp: #25D366;  /* Verde WhatsApp */
   
-  /* Superficies Oscuras */
-  --color-surface-dark: #121212;
-  --color-surface-card: #1E1E1E;
-  --color-surface-border: #333333;
+  /* Semántica (Mapeado a variables dinámicas) */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
   
-  /* Sombras Neón */
+  /* Sombras */
   --shadow-glow-orange: 0 0 20px -5px rgba(255, 107, 0, 0.3);
 }
 
-/* Configuración Base */
+/* --- VARIABLES DINÁMICAS --- */
 :root {
-  --background: var(--color-surface-dark);
-  --foreground: #ffffff;
+  /* MODO CLARO (Limpio, estilo SaaS moderno) */
+  --background: #FFFFFF;
+  --foreground: #0F172A; /* Gris muy oscuro, no negro puro */
+  --card: #F8FAFC;       /* Gris muy suave */
+  --card-foreground: #0F172A;
+  --border: #E2E8F0;
+}
+
+.dark {
+  /* MODO OSCURO (Identidad FunnelHot Premium) */
+  --background: #121212; /* Gris Carbón */
+  --foreground: #FFFFFF;
+  --card: #1E1E1E;       /* Tarjeta oscura */
+  --card-foreground: #FFFFFF;
+  --border: #333333;
 }
 
 body {
@@ -28,24 +47,16 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave */
 }
 
-/* Utilidad para el gradiente de fuego */
+/* Utilidad Gradiente Fuego */
 .bg-gradient-fire {
   background: linear-gradient(135deg, var(--color-hot) 0%, var(--color-fire) 100%);
 }
 
-/* Scrollbar personalizada (Estilo Pro) */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-surface-dark); 
-}
-::-webkit-scrollbar-thumb {
-  background: #333; 
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-hot); 
-}
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-hot); }
