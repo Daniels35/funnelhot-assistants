@@ -2,6 +2,7 @@
 
 import { Assistant } from "@/types/assistant";
 import { Edit2, Trash2, MessageSquare, Bot } from "lucide-react";
+import Link from "next/link"; // <--- 1. Importante: Importar Link
 
 interface AssistantCardProps {
   assistant: Assistant;
@@ -47,13 +48,14 @@ export function AssistantCard({ assistant, onDelete, onEdit }: AssistantCardProp
 
       {/* Acciones */}
       <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
-        <button 
-          onClick={() => alert("Ir a entrenamiento (Próximamente)")}
-          className="text-xs font-semibold flex items-center gap-1.5 text-muted-foreground hover:text-white transition-colors"
+        {/* 2. REEMPLAZO DEL BOTÓN POR LINK */}
+        <Link 
+          href={`/assistant/${assistant.id}`} // <--- Redirección Dinámica
+          className="text-xs font-semibold flex items-center gap-1.5 text-muted-foreground hover:text-hot transition-colors"
         >
           <MessageSquare className="w-3.5 h-3.5" />
           Entrenar
-        </button>
+        </Link>
 
         <div className="flex gap-1">
           <button 
