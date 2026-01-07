@@ -6,41 +6,36 @@ import { AssistantCard } from "@/components/assistants/AssistantCard";
 import { CreateAssistantModal } from "@/components/assistants/CreateAssistantModal";
 import { Plus } from "lucide-react";
 import { Assistant } from "@/types/assistant";
-import { toast } from "sonner"; // Opcional: Feedback extra
+import { toast } from "sonner";
 
 export default function Home() {
   const { assistants, isLoading, deleteAssistant, addAssistant, updateAssistant } = useAssistants();
   
-  // Estados para controlar el modal y la edición
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAssistant, setEditingAssistant] = useState<Assistant | null>(null);
 
-  // Abrir modal para CREAR
+
   const handleCreateOpen = () => {
-    setEditingAssistant(null); // Nos aseguramos de que no haya datos "viejos"
+    setEditingAssistant(null);
     setIsModalOpen(true);
   };
 
-  // Abrir modal para EDITAR
   const handleEditOpen = (assistant: Assistant) => {
-    setEditingAssistant(assistant); // Cargamos los datos del asistente
+    setEditingAssistant(assistant);
     setIsModalOpen(true);
   };
 
-  // Guardar (Discrimina entre Crear o Actualizar)
   const handleSaveAssistant = (assistantData: Assistant) => {
     if (editingAssistant) {
-      // Estamos editando
       updateAssistant(assistantData.id, assistantData);
       toast.success("Asistente actualizado correctamente");
     } else {
-      // Estamos creando
       addAssistant(assistantData);
       toast.success("Nuevo asistente creado");
     }
     
     setIsModalOpen(false);
-    setEditingAssistant(null); // Limpieza final
+    setEditingAssistant(null);
   };
 
   if (isLoading) {
@@ -59,7 +54,7 @@ export default function Home() {
           </p>
         </div>
         <button 
-          onClick={handleCreateOpen} // Acción de crear
+          onClick={handleCreateOpen}
           className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-fire text-white font-semibold shadow-lg shadow-hot/20 hover:shadow-hot/40 hover:scale-105 transition-all active:scale-95"
         >
           <Plus className="w-5 h-5" />
@@ -74,7 +69,7 @@ export default function Home() {
               key={assistant.id} 
               assistant={assistant} 
               onDelete={deleteAssistant}
-              onEdit={handleEditOpen} // Pasamos la función de editar
+              onEdit={handleEditOpen}
             />
           ))}
         </div>
@@ -96,12 +91,11 @@ export default function Home() {
         </div>
       )}
 
-      {/* Modal Inteligente (Creación/Edición) */}
       <CreateAssistantModal 
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveAssistant}
-        initialData={editingAssistant} // Pasamos los datos si existen
+        initialData={editingAssistant}
       />
     </div>
   );
