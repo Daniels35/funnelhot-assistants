@@ -52,7 +52,7 @@ Si quieres correr este proyecto en tu máquina:
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone [https://github.com/TU_USUARIO/funnelhot-assistants.git](https://github.com/TU_USUARIO/funnelhot-assistants.git)
+   git clone [https://github.com/Daniels35/funnelhot-assistants.git](https://github.com/Daniels35/funnelhot-assistants.git)
    cd funnelhot-assistants
 
 ## Instalar dependencias:
