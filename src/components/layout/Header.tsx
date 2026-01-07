@@ -33,7 +33,7 @@ export function Header() {
           
           {/* Avatar Simulado (Usuario) */}
           <div className="w-9 h-9 rounded-full bg-surface-card border border-border flex items-center justify-center overflow-hidden hover:border-hot transition-colors cursor-pointer">
-            <span className="text-xs font-bold text-hot">FH</span>
+            <span className="text-xs font-bold text-hot">DD</span>
           </div>
         </div>
       </div>
