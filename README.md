@@ -51,16 +51,15 @@ Una aplicación SaaS moderna construida con **Next.js 16** y **Tailwind CSS v4**
 Si quieres correr este proyecto en tu máquina:
 
 1. **Clonar el repositorio:**
-   ```bash
+
    git clone [https://github.com/Daniels35/funnelhot-assistants.git](https://github.com/Daniels35/funnelhot-assistants.git)
+   
    cd funnelhot-assistants
 
 ## Instalar dependencias:
 
 npm install
 
-
-npm install
 ## Correr el servidor de desarrollo:
 
 npm run dev
