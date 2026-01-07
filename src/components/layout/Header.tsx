@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Flame } from "lucide-react"; // Icono temporal para el logo
+import { Flame } from "lucide-react";
 
 export function Header() {
   return (
