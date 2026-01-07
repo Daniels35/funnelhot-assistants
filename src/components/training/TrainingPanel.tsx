@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Assistant } from "@/types/assistant";
 import { Save, Sparkles, AlertCircle } from "lucide-react";
+import { toast } from "sonner"; // <--- 1. Importamos el toast
 
 interface TrainingPanelProps {
   assistant: Assistant;
@@ -22,10 +23,16 @@ export function TrainingPanel({ assistant, onUpdate }: TrainingPanelProps) {
 
   const handleSave = () => {
     setIsSaving(true);
+    
     // Simular delay de red
     setTimeout(() => {
       onUpdate(assistant.id, { trainingData: prompt });
       setIsSaving(false);
+      
+      toast.success("Entrenamiento guardado", {
+        description: "Las instrucciones del sistema se han actualizado correctamente.",
+        duration: 3000,
+      });
     }, 1200);
   };
 

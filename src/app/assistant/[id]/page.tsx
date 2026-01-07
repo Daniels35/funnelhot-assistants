@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useAssistants } from "@/hooks/useAssistants";
 import { TrainingPanel } from "@/components/training/TrainingPanel";
 import { ChatSimulator } from "@/components/training/ChatSimulator";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Bot } from "lucide-react"; // Importamos Bot para decorar
 import Link from "next/link";
 
 export default function TrainingPage() {
@@ -31,30 +31,37 @@ export default function TrainingPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-6xl px-4 py-6 h-[calc(100vh-80px)] flex flex-col">
+    <div className="container mx-auto max-w-6xl px-4 py-6 h-auto lg:h-[calc(100vh-80px)] flex flex-col">
+      
       {/* Header de la Página */}
       <div className="flex items-center gap-4 mb-6">
         <Link 
           href="/" 
-          className="p-2 rounded-lg hover:bg-surface-dark border border-transparent hover:border-border transition-colors"
+          className="p-2 rounded-lg hover:bg-surface-dark border border-transparent hover:border-border transition-colors group"
         >
-          <ArrowLeft className="w-5 h-5 text-muted-foreground" />
+          <ArrowLeft className="w-5 h-5 text-muted-foreground group-hover:text-foreground" />
         </Link>
+        
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            Entrenamiento: <span className="text-hot">{currentAssistant.name}</span>
+          <h1 className="text-2xl font-bold text-foreground leading-none">
+            Entrenamiento
           </h1>
-          <p className="text-sm text-muted-foreground">
-            Define el comportamiento y prueba las respuestas en tiempo real.
-          </p>
+          <div className="flex items-center gap-2 mt-1.5">
+            <Bot className="w-4 h-4 text-hot" />
+            <span className="text-lg font-medium text-hot">
+              {currentAssistant.name}
+            </span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-surface-dark border border-border text-muted-foreground ml-2 hidden sm:inline-block">
+              {currentAssistant.language} • {currentAssistant.tone}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Grid de 2 Columnas (Layout Principal) */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-0">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:min-h-0">
         
         {/* Columna Izquierda: Configuración */}
-        <div className="flex flex-col min-h-0">
+        <div className="flex flex-col min-h-[500px] lg:min-h-0">
           <TrainingPanel 
             assistant={currentAssistant} 
             onUpdate={updateAssistant} 
