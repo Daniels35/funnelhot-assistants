@@ -14,7 +14,6 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAssistant, setEditingAssistant] = useState<Assistant | null>(null);
 
-
   const handleCreateOpen = () => {
     setEditingAssistant(null);
     setIsModalOpen(true);
@@ -25,10 +24,16 @@ export default function Home() {
     setIsModalOpen(true);
   };
 
+  // 5. Flujo de edición: Alert Nativo -> Toast Sonner
   const handleSaveAssistant = (assistantData: Assistant) => {
     if (editingAssistant) {
       updateAssistant(assistantData.id, assistantData);
-      toast.success("Asistente actualizado correctamente");
+      
+      setTimeout(() => {
+        window.alert(`Se ha editado el asistente "${assistantData.name}".`);
+        toast.success(`Asistente "${assistantData.name}" actualizado correctamente`);
+      }, 100);
+
     } else {
       addAssistant(assistantData);
       toast.success("Nuevo asistente creado");
@@ -43,7 +48,7 @@ export default function Home() {
   }
 
   return (
-    <div className="container mx-auto max-w-6xl">
+    <div className="container mx-auto max-w-6xl px-4 md:px-6 py-8">
       <div className="flex flex-col md:flex-row justify-between items-end md:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
@@ -55,7 +60,7 @@ export default function Home() {
         </div>
         <button 
           onClick={handleCreateOpen}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-fire text-white font-semibold shadow-lg shadow-hot/20 hover:shadow-hot/40 hover:scale-105 transition-all active:scale-95"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-fire text-white font-semibold shadow-lg shadow-hot/20 hover:shadow-hot/40 hover:scale-105 transition-all active:scale-95 cursor-pointer"
         >
           <Plus className="w-5 h-5" />
           Crear Asistente
@@ -84,7 +89,7 @@ export default function Home() {
           </p>
           <button 
             onClick={handleCreateOpen}
-            className="mt-6 text-hot hover:underline text-sm font-medium"
+            className="mt-6 text-hot hover:underline text-sm font-medium cursor-pointer hover:text-hot-hover transition-colors"
           >
             Crear uno ahora
           </button>
@@ -96,6 +101,7 @@ export default function Home() {
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveAssistant}
         initialData={editingAssistant}
+        existingAssistants={assistants}
       />
     </div>
   );
