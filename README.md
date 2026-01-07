@@ -30,7 +30,7 @@ Una aplicación SaaS moderna construida con **Next.js 16** y **Tailwind CSS v4**
 
 ### 🛡️ Seguridad y Robustez
 - **Sanitización de Inputs:** Protección contra inyecciones básicas.
-- **Generación de IDs Híbrida:** Sistema dual que usa `crypto.randomUUID` en entornos seguros (HTTPS) y un algoritmo matemático de respaldo para redes locales (HTTP/IP móviles).
+- **Generación de IDs Híbrida:** Sistema dual que usa `crypto.randomUUID` en entornos seguros (HTTPS)
 
 ---
 
@@ -55,20 +55,19 @@ Si quieres correr este proyecto en tu máquina:
    git clone [https://github.com/TU_USUARIO/funnelhot-assistants.git](https://github.com/TU_USUARIO/funnelhot-assistants.git)
    cd funnelhot-assistants
 
-Instalar dependencias:
-
-Bash
+## Instalar dependencias:
 
 npm install
-Correr el servidor de desarrollo:
 
-Bash
+
+npm install
+## Correr el servidor de desarrollo:
 
 npm run dev
 Abrir en el navegador: Visita http://localhost:3000
 
-📂 Estructura del Proyecto
-Bash
+## 📂 Estructura del Proyecto
+
 
 src/
 ├── app/
