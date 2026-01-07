@@ -67,7 +67,7 @@ Abrir en el navegador: Visita http://localhost:3000
 
 ## 📂 Estructura del Proyecto
 
-
+```bash
 src/
 ├── app/
 │   ├── assistant/[id]/  # Página dinámica de entrenamiento
