@@ -5,10 +5,43 @@ import { useAssistants } from "@/hooks/useAssistants";
 import { AssistantCard } from "@/components/assistants/AssistantCard";
 import { CreateAssistantModal } from "@/components/assistants/CreateAssistantModal";
 import { Plus } from "lucide-react";
+import { Assistant } from "@/types/assistant";
+import { toast } from "sonner"; // Opcional: Feedback extra
 
 export default function Home() {
-  const { assistants, isLoading, deleteAssistant, addAssistant } = useAssistants();
+  const { assistants, isLoading, deleteAssistant, addAssistant, updateAssistant } = useAssistants();
+  
+  // Estados para controlar el modal y la edición
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingAssistant, setEditingAssistant] = useState<Assistant | null>(null);
+
+  // Abrir modal para CREAR
+  const handleCreateOpen = () => {
+    setEditingAssistant(null); // Nos aseguramos de que no haya datos "viejos"
+    setIsModalOpen(true);
+  };
+
+  // Abrir modal para EDITAR
+  const handleEditOpen = (assistant: Assistant) => {
+    setEditingAssistant(assistant); // Cargamos los datos del asistente
+    setIsModalOpen(true);
+  };
+
+  // Guardar (Discrimina entre Crear o Actualizar)
+  const handleSaveAssistant = (assistantData: Assistant) => {
+    if (editingAssistant) {
+      // Estamos editando
+      updateAssistant(assistantData.id, assistantData);
+      toast.success("Asistente actualizado correctamente");
+    } else {
+      // Estamos creando
+      addAssistant(assistantData);
+      toast.success("Nuevo asistente creado");
+    }
+    
+    setIsModalOpen(false);
+    setEditingAssistant(null); // Limpieza final
+  };
 
   if (isLoading) {
     return <div className="p-20 text-center text-muted-foreground">Cargando motores de IA...</div>;
@@ -26,7 +59,7 @@ export default function Home() {
           </p>
         </div>
         <button 
-          onClick={() => setIsModalOpen(true)}
+          onClick={handleCreateOpen} // Acción de crear
           className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-fire text-white font-semibold shadow-lg shadow-hot/20 hover:shadow-hot/40 hover:scale-105 transition-all active:scale-95"
         >
           <Plus className="w-5 h-5" />
@@ -41,7 +74,7 @@ export default function Home() {
               key={assistant.id} 
               assistant={assistant} 
               onDelete={deleteAssistant}
-              onEdit={() => alert("Editar (Próximamente)")}
+              onEdit={handleEditOpen} // Pasamos la función de editar
             />
           ))}
         </div>
@@ -54,9 +87,8 @@ export default function Home() {
           <p className="text-sm text-muted-foreground max-w-sm mx-auto mt-2">
             Tu ejército de ventas está vacío. Crea tu primer agente para comenzar a automatizar.
           </p>
-          {/* Botón secundario para estado vacío */}
           <button 
-            onClick={() => setIsModalOpen(true)}
+            onClick={handleCreateOpen}
             className="mt-6 text-hot hover:underline text-sm font-medium"
           >
             Crear uno ahora
@@ -64,11 +96,12 @@ export default function Home() {
         </div>
       )}
 
-      {/* MODAL DE CREACIÓN */}
+      {/* Modal Inteligente (Creación/Edición) */}
       <CreateAssistantModal 
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSave={addAssistant}
+        onSave={handleSaveAssistant}
+        initialData={editingAssistant} // Pasamos los datos si existen
       />
     </div>
   );

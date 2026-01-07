@@ -8,9 +8,10 @@ interface CreateAssistantModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (assistant: Assistant) => void;
+  initialData?: Assistant | null;
 }
 
-export function CreateAssistantModal({ isOpen, onClose, onSave }: CreateAssistantModalProps) {
+export function CreateAssistantModal({ isOpen, onClose, onSave, initialData }: CreateAssistantModalProps) {
   const [step, setStep] = useState(1);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,35 +25,55 @@ export function CreateAssistantModal({ isOpen, onClose, onSave }: CreateAssistan
     audioEnabled: false,
   });
 
-  // Helper para contar caracteres reales (sin NINGÚN espacio)
-  const getRealLength = (text: string) => {
-    return text.replace(/\s/g, "").length; // Elimina todos los espacios (inicio, fin y entre palabras)
-  };
+  // --- EFECTO: Cargar datos si estamos editando ---
+  useEffect(() => {
+    if (isOpen) {
+      if (initialData) {
+        setFormData({
+          name: initialData.name,
+          language: initialData.language,
+          tone: initialData.tone,
+          short: initialData.responseConfig.short,
+          medium: initialData.responseConfig.medium,
+          long: initialData.responseConfig.long,
+          audioEnabled: initialData.responseConfig.audioEnabled,
+        });
+      } else {
+        setFormData({
+          name: "",
+          language: "Español",
+          tone: "Profesional",
+          short: 30,
+          medium: 40,
+          long: 30,
+          audioEnabled: false,
+        });
+      }
+      setStep(1);
+      setError(null);
+    }
+  }, [isOpen, initialData]);
 
+  // Helper para contar caracteres reales
+  const getRealLength = (text: string) => text.replace(/\s/g, "").length;
   const nameRealLength = getRealLength(formData.name);
 
-  // Limpiar error de porcentajes en Paso 2
+  // Limpiar errores en paso 2
   useEffect(() => {
     if (step === 2) {
       const total = Number(formData.short) + Number(formData.medium) + Number(formData.long);
-      if (total === 100 && error) {
-        setError(null);
-      }
+      if (total === 100 && error) setError(null);
     }
   }, [formData.short, formData.medium, formData.long, step, error]);
 
   if (!isOpen) return null;
 
-  // --- LÓGICA ---
+  // --- HANDLERS ---
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
     setFormData({ ...formData, name: newName });
-    
-    // Validación en tiempo real con longitud estricta
-    if (error && getRealLength(newName) >= 3) {
-      setError(null);
-    }
+    if (error && getRealLength(newName) >= 3) setError(null);
   };
 
   const validateStep1 = () => {
@@ -81,8 +102,11 @@ export function CreateAssistantModal({ isOpen, onClose, onSave }: CreateAssistan
 
   const handleSubmit = () => {
     if (validateStep2()) {
-      const newAssistant: Assistant = {
-        id: crypto.randomUUID(),
+      const assistantData: Assistant = {
+        id: initialData?.id || crypto.randomUUID(),
+        createdAt: initialData?.createdAt || new Date().toISOString(),
+        trainingData: initialData?.trainingData, 
+        
         name: formData.name.trim(),
         language: formData.language,
         tone: formData.tone,
@@ -92,19 +116,11 @@ export function CreateAssistantModal({ isOpen, onClose, onSave }: CreateAssistan
           long: Number(formData.long),
           audioEnabled: formData.audioEnabled,
         },
-        createdAt: new Date().toISOString(),
       };
 
-      onSave(newAssistant);
-      handleClose();
+      onSave(assistantData);
+      onClose();
     }
-  };
-
-  const handleClose = () => {
-    setStep(1);
-    setError(null);
-    setFormData({ ...formData, name: "", short: 30, medium: 40, long: 30 });
-    onClose();
   };
 
   const totalPercentage = Number(formData.short) + Number(formData.medium) + Number(formData.long);
@@ -114,17 +130,18 @@ export function CreateAssistantModal({ isOpen, onClose, onSave }: CreateAssistan
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="bg-card border border-border w-full max-w-lg rounded-xl shadow-2xl shadow-black animate-in fade-in zoom-in duration-200">
         
-        {/* Header */}
+        {/* Header Dinámico */}
         <div className="flex justify-between items-center p-6 border-b border-border">
           <div>
-            <h2 className="text-xl font-bold text-foreground">Nuevo Asistente IA</h2>
+            <h2 className="text-xl font-bold text-foreground">
+              {initialData ? "Editar Asistente" : "Nuevo Asistente IA"}
+            </h2>
             <div className="flex gap-2 mt-2">
-              {/* CORRECCIÓN VISUAL: Barras de paso más visibles */}
               <span className={`h-1.5 w-12 rounded-full transition-colors duration-300 ${step >= 1 ? "bg-hot" : "bg-border dark:bg-zinc-700"}`} />
               <span className={`h-1.5 w-12 rounded-full transition-colors duration-300 ${step >= 2 ? "bg-hot" : "bg-gray-300 dark:bg-zinc-700"}`} />
             </div>
           </div>
-          <button onClick={handleClose} className="text-muted-foreground hover:text-foreground transition-colors">
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -144,7 +161,6 @@ export function CreateAssistantModal({ isOpen, onClose, onSave }: CreateAssistan
               <div className="space-y-2">
                 <label className="text-sm font-medium flex justify-between">
                   Nombre del Asistente
-                  {/* Feedback visual con conteo real */}
                   {formData.name.length > 0 && (
                     <span className={`text-xs ${nameRealLength >= 3 ? "text-green-500" : "text-muted-foreground"}`}>
                       {nameRealLength >= 3 ? "Válido" : `${3 - nameRealLength} letras más`}
@@ -153,7 +169,7 @@ export function CreateAssistantModal({ isOpen, onClose, onSave }: CreateAssistan
                 </label>
                 <input
                   type="text"
-                  className={`w-full bg-surface-dark border rounded-lg p-3 outline-none transition-all
+                  className={`w-full bg-card border rounded-lg p-3 outline-none transition-all
                     ${error && nameRealLength < 3 ? "border-red-500 focus:border-red-500" : "border-border focus:border-hot focus:ring-1 focus:ring-hot"}
                   `}
                   placeholder="Ej. Vendedor Estrella"
@@ -161,16 +177,13 @@ export function CreateAssistantModal({ isOpen, onClose, onSave }: CreateAssistan
                   onChange={handleNameChange}
                   autoFocus
                 />
-                <p className="text-xs text-muted-foreground">
-                  Solo cuentan letras y números, no los espacios.
-                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Idioma</label>
                   <select
-                    className="w-full bg-surface-dark border border-border rounded-lg p-3 outline-none focus:border-hot transition-colors"
+                    className="w-full bg-card border border-border rounded-lg p-3 outline-none focus:border-hot transition-colors"
                     value={formData.language}
                     onChange={(e) => setFormData({ ...formData, language: e.target.value as AssistantLanguage })}
                   >
@@ -182,7 +195,7 @@ export function CreateAssistantModal({ isOpen, onClose, onSave }: CreateAssistan
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Tono</label>
                   <select
-                    className="w-full bg-surface-dark border border-border rounded-lg p-3 outline-none focus:border-hot transition-colors"
+                    className="w-full bg-card border border-border rounded-lg p-3 outline-none focus:border-hot transition-colors"
                     value={formData.tone}
                     onChange={(e) => setFormData({ ...formData, tone: e.target.value as AssistantTone })}
                   >
@@ -213,7 +226,7 @@ export function CreateAssistantModal({ isOpen, onClose, onSave }: CreateAssistan
                     <div className="relative">
                       <input
                         type="number"
-                        className="w-full bg-surface-dark border border-border rounded-lg p-2 text-center focus:border-hot outline-none"
+                        className="w-full bg-card border border-border rounded-lg p-2 text-center focus:border-hot outline-none"
                         value={formData.short}
                         onChange={(e) => setFormData({ ...formData, short: Number(e.target.value) })}
                       />
@@ -225,7 +238,7 @@ export function CreateAssistantModal({ isOpen, onClose, onSave }: CreateAssistan
                     <div className="relative">
                       <input
                         type="number"
-                        className="w-full bg-surface-dark border border-border rounded-lg p-2 text-center focus:border-hot outline-none"
+                        className="w-full bg-card border border-border rounded-lg p-2 text-center focus:border-hot outline-none"
                         value={formData.medium}
                         onChange={(e) => setFormData({ ...formData, medium: Number(e.target.value) })}
                       />
@@ -237,7 +250,7 @@ export function CreateAssistantModal({ isOpen, onClose, onSave }: CreateAssistan
                     <div className="relative">
                       <input
                         type="number"
-                        className="w-full bg-surface-dark border border-border rounded-lg p-2 text-center focus:border-hot outline-none"
+                        className="w-full bg-card border border-border rounded-lg p-2 text-center focus:border-hot outline-none"
                         value={formData.long}
                         onChange={(e) => setFormData({ ...formData, long: Number(e.target.value) })}
                       />
@@ -246,14 +259,14 @@ export function CreateAssistantModal({ isOpen, onClose, onSave }: CreateAssistan
                   </div>
                 </div>
                 
-                <div className="h-2 w-full bg-surface-dark rounded-full overflow-hidden flex border border-border">
+                <div className="h-2 w-full bg-card/50 rounded-full overflow-hidden flex border border-border">
                   <div style={{ width: `${formData.short}%` }} className="bg-blue-500 h-full transition-all duration-300" />
                   <div style={{ width: `${formData.medium}%` }} className="bg-purple-500 h-full transition-all duration-300" />
                   <div style={{ width: `${formData.long}%` }} className="bg-hot h-full transition-all duration-300" />
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-surface-dark rounded-lg border border-border hover:border-hot/50 transition-colors cursor-pointer"
+              <div className="flex items-center justify-between p-4 bg-card rounded-lg border border-border hover:border-hot/50 transition-colors cursor-pointer"
                    onClick={() => setFormData({ ...formData, audioEnabled: !formData.audioEnabled })}>
                 <div className="flex flex-col">
                   <span className="text-sm font-medium">Respuestas de Audio</span>
@@ -268,9 +281,9 @@ export function CreateAssistantModal({ isOpen, onClose, onSave }: CreateAssistan
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-border flex justify-between bg-surface-dark/50 rounded-b-xl">
+        <div className="p-6 border-t border-border flex justify-between bg-card/50 rounded-b-xl">
           {step === 2 ? (
-            <button onClick={() => setStep(1)} className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-surface-dark rounded-lg transition-colors">
+            <button onClick={() => setStep(1)} className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-card rounded-lg transition-colors">
               Atrás
             </button>
           ) : (
@@ -289,7 +302,7 @@ export function CreateAssistantModal({ isOpen, onClose, onSave }: CreateAssistan
             {step === 1 ? (
               <>Siguiente <ChevronRight className="w-4 h-4" /></>
             ) : (
-              <>Crear Asistente <Check className="w-4 h-4" /></>
+              <>{initialData ? "Guardar Cambios" : "Crear Asistente"} <Check className="w-4 h-4" /></>
             )}
           </button>
         </div>
